@@ -1,19 +1,24 @@
 import logging
 import os
-import sys
-from datetime import datetime
+from logging import Formatter
 
 LOGGER_PATH = os.path.normpath(os.path.dirname(__file__))
 
 
 class Logger:
     """Логирование."""
-    def __init__(self, worker_name: str):
-        self.worker_name = worker_name
 
     @staticmethod
     def get_logger(logger_name="default_log"):
         """Получить базовый логгер."""
         logger = logging.getLogger(logger_name)
-        logger.setLevel(logging.INFO)
+        logger.setLevel(logging.DEBUG)
+        filelog = logging.FileHandler("log.txt", "w", encoding="UTF-8")
+        filelog.setLevel(logging.INFO)
+        filelog.setFormatter(Formatter(fmt="[%(asctime)s: %(levelname)s] %(message)s"))
+        logger.addHandler(filelog)
+        console = logging.StreamHandler()
+        console.setLevel(logging.ERROR)
+        console.setFormatter(Formatter(fmt="[%(asctime)s: %(levelname)s] %(message)s"))
+        logger.addHandler(console)
         return logger
